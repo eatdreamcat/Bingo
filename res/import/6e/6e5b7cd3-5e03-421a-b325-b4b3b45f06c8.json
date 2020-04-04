@@ -1,0 +1,27 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_bingo_blue_down",
+    "texture": "46k2z6v65BVZoMmaSpvJCm",
+    "rect": [
+      0,
+      10,
+      296,
+      131
+    ],
+    "offset": [
+      0,
+      -5
+    ],
+    "originalSize": [
+      296,
+      141
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

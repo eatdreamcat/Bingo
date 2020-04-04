@@ -1,0 +1,27 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_change_down",
+    "texture": "17VdfhHw9EzJmIEOd3uc8c",
+    "rect": [
+      0,
+      10,
+      136,
+      138
+    ],
+    "offset": [
+      0,
+      -5
+    ],
+    "originalSize": [
+      136,
+      148
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

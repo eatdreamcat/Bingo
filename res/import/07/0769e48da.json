@@ -1,0 +1,221 @@
+[
+  [
+    {
+      "__type__": "cc.Prefab",
+      "_name": "Score.5",
+      "data": {
+        "__id__": 1
+      }
+    },
+    {
+      "__type__": "cc.Node",
+      "_name": "Score.5",
+      "_level": 1,
+      "_components": [
+        {
+          "__type__": "cc.Label",
+          "node": {
+            "__id__": 1
+          },
+          "_useOriginalSize": false,
+          "_string": "/50",
+          "_N$string": "/50",
+          "_fontSize": 100,
+          "_lineHeight": 100,
+          "_N$file": {
+            "__uuid__": "62nS9rIAFDpIZKiLvPQbFN"
+          },
+          "_isSystemFontUsed": false,
+          "_N$horizontalAlign": 1,
+          "_N$verticalAlign": 1
+        }
+      ],
+      "_prefab": {
+        "__type__": "cc.PrefabInfo",
+        "root": {
+          "__id__": 1
+        },
+        "asset": {
+          "__uuid__": "44aDA6YcVFj6aN7mnwr87F"
+        },
+        "fileId": "cbULAzt2ROCLK/C84rkMPg"
+      },
+      "_contentSize": {
+        "__type__": "cc.Size",
+        "width": 259.09,
+        "height": 113.64
+      },
+      "_scale": {
+        "__type__": "cc.Vec3",
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "groupIndex": 1
+    }
+  ],
+  {
+    "__type__": "cc.LabelAtlas",
+    "_name": "Score",
+    "spriteFrame": {
+      "__uuid__": "eaPPezMFtCRraHnE7oSlBn"
+    },
+    "fontSize": 88,
+    "_fntConfig": {
+      "commonHeight": 100,
+      "fontSize": 88,
+      "atlasName": "font_score",
+      "fontDefDictionary": {
+        "47": {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "48": {
+          "rect": {
+            "x": 76,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "49": {
+          "rect": {
+            "x": 152,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "50": {
+          "rect": {
+            "x": 228,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "51": {
+          "rect": {
+            "x": 304,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "52": {
+          "rect": {
+            "x": 380,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "53": {
+          "rect": {
+            "x": 456,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "54": {
+          "rect": {
+            "x": 532,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "55": {
+          "rect": {
+            "x": 608,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "56": {
+          "rect": {
+            "x": 684,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "57": {
+          "rect": {
+            "x": 760,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        }
+      },
+      "kerningDict": {}
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_score",
+      "texture": "da9hcWeTJD0JnWTnDBznOq",
+      "rect": [
+        0,
+        4,
+        830,
+        96
+      ],
+      "offset": [
+        -3,
+        -2
+      ],
+      "originalSize": [
+        836,
+        100
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+]

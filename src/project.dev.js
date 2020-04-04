@@ -172,8 +172,17 @@ window.__require = function e(t, n, r) {
     var Card = function(_super) {
       __extends(Card, _super);
       function Card() {
-        return null !== _super && _super.apply(this, arguments) || this;
+        var _this = null !== _super && _super.apply(this, arguments) || this;
+        _this.bingoTimes = 0;
+        return _this;
       }
+      Object.defineProperty(Card.prototype, "Wrong", {
+        get: function() {
+          return this.node.getChildByName("Wrong");
+        },
+        enumerable: true,
+        configurable: true
+      });
       Object.defineProperty(Card.prototype, "Pos", {
         get: function() {
           return Const_1.CardWord[this.word] + "." + this.index;
@@ -197,7 +206,14 @@ window.__require = function e(t, n, r) {
       });
       Object.defineProperty(Card.prototype, "NumberLabel", {
         get: function() {
-          return this.node.getChildByName("Background").getChildByName("Number").getComponent(cc.Label);
+          return this.node.getChildByName("Number").getComponent(cc.Label);
+        },
+        enumerable: true,
+        configurable: true
+      });
+      Object.defineProperty(Card.prototype, "Bingo", {
+        get: function() {
+          return this.node.getChildByName("Bingo");
         },
         enumerable: true,
         configurable: true
@@ -206,7 +222,14 @@ window.__require = function e(t, n, r) {
         this.setValue(arguments[0][2]);
         this.setIndex(arguments[0][1]);
         this.setWord(arguments[0][0]);
-        this.Star.active = Const_1.StarCard.indexOf(this.Pos) >= 0;
+        this.bingoTimes = 0;
+        this.Wrong.active = false;
+        for (var _i = 0, _a = this.Bingo.children; _i < _a.length; _i++) {
+          var child = _a[_i];
+          child.active = false;
+        }
+        this.Star.active = false;
+        this.Bingo.getChildByName(this.bingoTimes.toString()).active = Const_1.StarCard.indexOf(this.Pos) >= 0;
         this.initEvent();
       };
       Card.prototype.unuse = function() {
@@ -216,23 +239,56 @@ window.__require = function e(t, n, r) {
       Card.prototype.initEvent = function() {
         this.node.on(cc.Node.EventType.TOUCH_START, this.onCardTouch, this);
       };
+      Card.prototype.canTouch = function() {
+        for (var _i = 0, _a = this.Bingo.children; _i < _a.length; _i++) {
+          var child = _a[_i];
+          if (child.active) return false;
+        }
+        return !this.Star.active;
+      };
       Card.prototype.onCardTouch = function(e) {
-        if (this.Star.active) return;
-        var hasReward = false;
+        if (!this.canTouch()) return;
+        var score = 0;
+        var scoreType = Const_1.ScoreType.Normal;
         var currentReward = Game_1.Game.CurrentReward.children[0];
         if (currentReward && currentReward.getComponent(Point_1.default)) {
           var point = currentReward.getComponent(Point_1.default);
           if (point.TimeLeftPercent > 0 && point.StringValue == this.StringValue) {
-            point.goToRewardArray();
-            hasReward = true;
-          }
+            var percentCost = 1 - point.TimeLeftPercent;
+            if (percentCost <= Const_1.TimeScorePercent.Perfect) {
+              score = Const_1.NormalScore + Const_1.SpecialScore.Perfect;
+              scoreType = Const_1.ScoreType.Perfect;
+            } else if (percentCost <= Const_1.TimeScorePercent.Quickly) {
+              score = Const_1.NormalScore + Const_1.SpecialScore.Quickly * (Const_1.TimeScorePercent.Quickly - percentCost) / (Const_1.TimeScorePercent.Quickly - Const_1.TimeScorePercent.Perfect);
+              scoreType = Const_1.ScoreType.Nice;
+            } else {
+              score = Const_1.NormalScore + Const_1.SpecialScore.Good * (1 - percentCost) / Const_1.TimeScorePercent.Quickly;
+              scoreType = Const_1.ScoreType.Good;
+            }
+          } else point.addTime(-5);
         }
         for (var _i = 0, _a = Game_1.Game.RewardArray.children; _i < _a.length; _i++) {
           var child = _a[_i];
           var point = child.getComponent(Point_1.default);
-          point && point.StringValue == this.StringValue && (hasReward = true);
+          if (point && point.StringValue == this.StringValue) {
+            score = Const_1.NormalScore;
+            scoreType = Const_1.ScoreType.Normal;
+          }
         }
-        hasReward && this.turnStar();
+        score = Math.ceil(score);
+        if (score > 0) {
+          this.turnStar();
+          Game_1.Game.addScore(scoreType, score, 1);
+        } else this.showWrong();
+      };
+      Card.prototype.showWrong = function() {
+        var _this = this;
+        if (this.Wrong.active || this.Wrong.getNumberOfRunningActions() > 0) return;
+        this.Wrong.opacity = 0;
+        this.Wrong.active = true;
+        this.Wrong.runAction(cc.sequence(cc.fadeIn(.1), cc.delayTime(.05), cc.fadeOut(.05), cc.callFunc(function() {
+          _this.Wrong.active = false;
+        })));
       };
       Card.prototype.turnStar = function() {
         this.Star.active = true;
@@ -273,6 +329,7 @@ window.__require = function e(t, n, r) {
         this.alreadySubmit = false;
         this.isNewPlayer = false;
         this.celerStartCallback = null;
+        this.isInCeler = false;
         var errLog_1;
         false;
       }
@@ -299,12 +356,19 @@ window.__require = function e(t, n, r) {
       CelerSDK.prototype.isNew = function() {
         return this.isNewPlayer;
       };
+      CelerSDK.prototype.isOnCelerPlatform = function() {
+        return this.isInCeler;
+      };
       CelerSDK.prototype.onCelerStart = function() {
         var match = celerx.getMatch();
         if (match && match.sharedRandomSeed) {
           CMath.randomSeed = match.sharedRandomSeed;
           CMath.sharedSeed = match.sharedRandomSeed;
-        } else CMath.randomSeed = Math.random();
+          this.isInCeler = true;
+        } else {
+          this.isInCeler = false;
+          CMath.randomSeed = Math.random();
+        }
         match && match.shouldLaunchTutorial || true ? this.isNewPlayer = true : this.isNewPlayer = false;
         var takeImage = false;
         var canvas = document.getElementsByTagName("canvas")[0];
@@ -342,14 +406,39 @@ window.__require = function e(t, n, r) {
       value: true
     });
     exports.GameTime = 1200;
+    var Theme;
+    (function(Theme) {
+      Theme[Theme["Wheel"] = 0] = "Wheel";
+      Theme[Theme["Carousel"] = 1] = "Carousel";
+      Theme[Theme["Roller"] = 2] = "Roller";
+    })(Theme = exports.Theme || (exports.Theme = {}));
+    exports.ThemePool = [ Theme.Carousel, Theme.Roller, Theme.Wheel ];
     exports.RewardTime = {
-      One: 3,
-      Two: 2.5
+      One: 30.25,
+      Two: 20.9
     };
+    exports.TimeScorePercent = {
+      Perfect: .2,
+      Quickly: .5
+    };
+    var ScoreType;
+    (function(ScoreType) {
+      ScoreType[ScoreType["Perfect"] = 0] = "Perfect";
+      ScoreType[ScoreType["Nice"] = 1] = "Nice";
+      ScoreType[ScoreType["Good"] = 2] = "Good";
+      ScoreType[ScoreType["Normal"] = 3] = "Normal";
+    })(ScoreType = exports.ScoreType || (exports.ScoreType = {}));
+    exports.SpecialScore = {
+      Perfect: 50,
+      Quickly: 30,
+      Good: 20
+    };
+    exports.NormalScore = 100;
+    exports.TimeLimit = 91;
     exports.RewardListLimit = 4;
     exports.CardNumber = {
-      Min: 1,
-      Max: 5
+      Min: 2,
+      Max: 3
     };
     var PrefabName;
     (function(PrefabName) {
@@ -613,10 +702,13 @@ window.__require = function e(t, n, r) {
         Game_1.Game.CurrentReward = this.CurrentPoint;
         Game_1.Game.RewardArray = this.PointArray;
         this.PageTabButtonRoot.active = false;
-        this.CardPages.indicator.node.active = false;
         CelerSDK_1.CelerSDK.inst.init(this.celerOnStart.bind(this));
         StepController_1.gStep.register(this.celerReady.bind(this), [ Step.Audio, Step.Prefab ]);
         Game_1.Game.prepare();
+        for (var _i = 0, _a = this.Background.children; _i < _a.length; _i++) {
+          var child = _a[_i];
+          child.active = child.name == Const_1.Theme[Game_1.Game.Theme];
+        }
         AudioController_1.gAudio.init(function() {
           StepController_1.gStep.nextStep(Step.Audio);
         });
@@ -633,6 +725,14 @@ window.__require = function e(t, n, r) {
         Game_1.Game.start();
         this.initGameScene();
       };
+      GameScene.prototype.updateButtonGroup = function() {
+        for (var _i = 0, _a = this.PageTabButtonRoot.children; _i < _a.length; _i++) {
+          var child = _a[_i];
+          child.getChildByName("Normal").active = child.getComponent(cc.Button).interactable;
+          child.getChildByName("Press").active = !child.getChildByName("Normal").active;
+          child.getComponent(cc.Button).interactable ? child.getChildByName("Text").opacity = 127.5 : child.getChildByName("Text").opacity = 255;
+        }
+      };
       GameScene.prototype.initGameScene = function() {
         var pageNumber = Game_1.Game.getCardNumber();
         this.PageTabButtonRoot.active = !(pageNumber <= 1);
@@ -640,11 +740,11 @@ window.__require = function e(t, n, r) {
         for (var i = 1; i <= tabCount; i++) {
           var child = this.PageTabButtonRoot.getChildByName(i.toString());
           if (child && i > pageNumber) child.removeFromParent(true); else {
-            child.getComponent(cc.Button).enableAutoGrayEffect = true;
             child.on(cc.Node.EventType.TOUCH_START, this.scrollCardPage, this);
             1 == i && (child.getComponent(cc.Button).interactable = false);
           }
         }
+        this.updateButtonGroup();
         console.log(" tab button count:", this.PageTabButtonRoot.childrenCount);
         this.PageTabButtonRoot.active = pageNumber > 1;
         var padCount = this.CardPages.content.childrenCount;
@@ -652,9 +752,8 @@ window.__require = function e(t, n, r) {
           var child = this.CardPages.content.getChildByName(i.toString());
           child && i > pageNumber ? this.CardPages.removePage(child) : child.addComponent(Pad_1.default);
         }
-        this.CardPages.indicator.node.active = pageNumber > 1;
         console.log(" pad count:", this.CardPages.content.childrenCount);
-        this.CardPages.node.on("scroll-ended", this.onPageTurning, this);
+        this.CardPages.node.on("scroll-ended", this.onPageTurnDone, this);
         this.CardPages["_unregisterEvent"]();
         for (var _i = 0, _a = this.CardPages.content.children; _i < _a.length; _i++) {
           var pad = _a[_i];
@@ -678,23 +777,26 @@ window.__require = function e(t, n, r) {
         }
         this.onCurrentPointRemoveChild(null);
       };
-      GameScene.prototype.onPageTurning = function() {
+      GameScene.prototype.onPageTurnDone = function() {
         for (var _i = 0, _a = this.PageTabButtonRoot.children; _i < _a.length; _i++) {
           var child = _a[_i];
           child.getComponent(cc.Button).interactable = child.name != (this.CardPages.getCurrentPageIndex() + 1).toString();
         }
+        this.updateButtonGroup();
       };
       GameScene.prototype.scrollCardPage = function(e) {
         for (var _i = 0, _a = this.PageTabButtonRoot.children; _i < _a.length; _i++) {
           var child = _a[_i];
           e.target == child ? child.getComponent(cc.Button).interactable = false : child.getComponent(cc.Button).interactable = true;
         }
-        this.CardPages.scrollToPage(parseInt(e.target.name) - 1, .1);
+        this.updateButtonGroup();
+        this.CardPages.scrollToPage(parseInt(e.target.name) - 1, 0);
       };
       GameScene.prototype.initEvent = function() {
         EventManager_1.gEventMgr.targetOff(this);
         this.CurrentPoint.on(cc.Node.EventType.CHILD_REMOVED, this.onCurrentPointRemoveChild, this);
         EventManager_1.gEventMgr.on(EventName_1.GlobalEvent.ADD_2_NORMAL_REWARD, this.addNormalReward, this);
+        EventManager_1.gEventMgr.on(EventName_1.GlobalEvent.ADD_SCORE, this.addScore, this);
       };
       GameScene.prototype.onCurrentPointRemoveChild = function(child) {
         var _this = this;
@@ -730,12 +832,11 @@ window.__require = function e(t, n, r) {
         point.runAction(cc.sequence(cc.delayTime(delay), cc.callFunc(function() {
           point.setPosition(CMath.ConvertToNodeSpaceAR(point, _this.PointArray));
           point.setParent(_this.PointArray);
-        }), cc.moveTo(.15, 0, 0)));
+        }), cc.spawn(cc.moveTo(.15, 0, 0), cc.scaleTo(.15, .9))));
       };
       GameScene.prototype.addScore = function(score, scale, pos) {
         var _this = this;
         void 0 === pos && (pos = cc.v2(0, 0));
-        scale *= 1.1;
         var scoreLabel = GameFactory_1.gFactory.getObj(Const_1.PrefabName.Score);
         scoreLabel.scale = 0;
         scoreLabel.opacity = 255;
@@ -776,7 +877,7 @@ window.__require = function e(t, n, r) {
           }
         }
       };
-      __decorate([ property(cc.Sprite) ], GameScene.prototype, "Background", void 0);
+      __decorate([ property(cc.Node) ], GameScene.prototype, "Background", void 0);
       __decorate([ property(cc.Node) ], GameScene.prototype, "TopNode", void 0);
       __decorate([ property(cc.Label) ], GameScene.prototype, "TimeLabel", void 0);
       __decorate([ property(cc.Label) ], GameScene.prototype, "ScoreLabel", void 0);
@@ -854,11 +955,11 @@ window.__require = function e(t, n, r) {
       GameCtrl.prototype.getScore = function() {
         return this.score;
       };
-      GameCtrl.prototype.addScore = function(color, score, scale, pos) {
+      GameCtrl.prototype.addScore = function(type, score, scale, pos) {
         void 0 === pos && (pos = cc.v2(0, 0));
         this.score += score;
         this.score = Math.max(0, this.score);
-        this.addBingoScore(color, score);
+        this.addBingoScore(type, score);
         EventManager_1.gEventMgr.emit(EventName_1.GlobalEvent.ADD_SCORE, score, scale, pos);
       };
       GameCtrl.prototype.getCardNumber = function() {
@@ -882,6 +983,8 @@ window.__require = function e(t, n, r) {
         console.log(this.numberRandomPool);
         this.cardNumber = Math.floor(CMath.getRandom(Const_1.CardNumber.Min, Const_1.CardNumber.Max));
         console.log(" \u5361\u7247\u6570\u91cf:", this.cardNumber);
+        for (var i = 0; i < 5; i++) this.Theme = Const_1.ThemePool[Math.floor(CMath.getRandom(0, Const_1.ThemePool.length))];
+        console.log("\u6e38\u620f\u4e3b\u9898:", Const_1.Theme[this.Theme]);
       };
       GameCtrl.prototype.addGameTime = function(time) {
         this.gameTime += time;
@@ -894,9 +997,9 @@ window.__require = function e(t, n, r) {
       GameCtrl.prototype.getGameTime = function() {
         return this.gameTime;
       };
-      GameCtrl.prototype.addBingoScore = function(color, score) {
-        this.bingoScore[color] || (this.bingoScore[color] = 0);
-        this.bingoScore[color] += score;
+      GameCtrl.prototype.addBingoScore = function(scoreType, score) {
+        this.bingoScore[scoreType] || (this.bingoScore[scoreType] = 0);
+        this.bingoScore[scoreType] += score;
       };
       GameCtrl.prototype.isPause = function() {
         return this.ispause;
@@ -1072,6 +1175,7 @@ window.__require = function e(t, n, r) {
     var Const_1 = require("./Const");
     var EventManager_1 = require("./Controller/EventManager");
     var EventName_1 = require("./Controller/EventName");
+    var CelerSDK_1 = require("./Controller/CelerSDK");
     var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
     var Point = function(_super) {
       __extends(Point, _super);
@@ -1091,14 +1195,7 @@ window.__require = function e(t, n, r) {
       });
       Object.defineProperty(Point.prototype, "Icon", {
         get: function() {
-          return this.node.getChildByName("Icon").getComponent(cc.Sprite);
-        },
-        enumerable: true,
-        configurable: true
-      });
-      Object.defineProperty(Point.prototype, "WordLabel", {
-        get: function() {
-          return this.node.getChildByName("Label").getChildByName("Word").getComponent(cc.Label);
+          return this.node.getChildByName("Icon");
         },
         enumerable: true,
         configurable: true
@@ -1139,7 +1236,7 @@ window.__require = function e(t, n, r) {
         if (parent) {
           this.TimeBar.node.active = "CurrentPoint" == parent.name;
           if (this.TimeBar.node.active) {
-            Game_1.Game.getGameTime() >= 60 ? this.totalTime = Const_1.RewardTime.One : this.totalTime = Const_1.RewardTime.Two;
+            Game_1.Game.getGameTime() >= Const_1.TimeLimit ? this.totalTime = Const_1.RewardTime.One : this.totalTime = Const_1.RewardTime.Two;
             this.currentTime = this.totalTime;
           } else {
             this.totalTime = 0;
@@ -1159,9 +1256,11 @@ window.__require = function e(t, n, r) {
           this.word = i;
           break;
         }
-        this.WordLabel.string = Const_1.CardWord[this.word];
         this.NumberLabel.string = this.value.toString();
-        this.Icon.node.color = Const_1.PointColor[this.word];
+        for (var _i = 0, _a = this.Icon.children; _i < _a.length; _i++) {
+          var child = _a[_i];
+          child.active = child.name == Const_1.CardWord[this.word];
+        }
       };
       Point.prototype.unuse = function() {};
       Point.prototype.update = function(dt) {
@@ -1171,6 +1270,11 @@ window.__require = function e(t, n, r) {
           this.TimeBar.node.active = this.currentTime > 0;
           this.currentTime <= 0 && this.goToRewardArray();
         }
+      };
+      Point.prototype.addTime = function(time) {
+        if (CelerSDK_1.CelerSDK.inst.isOnCelerPlatform()) return;
+        this.currentTime += time;
+        this.currentTime = Math.max(0, this.currentTime);
       };
       Point.prototype.goToRewardArray = function() {
         this.TimeBar.node.active = false;
@@ -1183,6 +1287,7 @@ window.__require = function e(t, n, r) {
     cc._RF.pop();
   }, {
     "./Const": "Const",
+    "./Controller/CelerSDK": "CelerSDK",
     "./Controller/EventManager": "EventManager",
     "./Controller/EventName": "EventName",
     "./Controller/Game": "Game"

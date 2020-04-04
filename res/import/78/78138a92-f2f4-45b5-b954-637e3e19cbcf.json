@@ -1,0 +1,27 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "btn_bingo_orange_down",
+    "texture": "c8aoZeA+pEz561yCk+hT7L",
+    "rect": [
+      0,
+      10,
+      298,
+      132
+    ],
+    "offset": [
+      0,
+      -5
+    ],
+    "originalSize": [
+      298,
+      142
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

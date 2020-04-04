@@ -1,0 +1,27 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "font_great",
+    "texture": "dfj+//7MhJ2auOFtdG0pOk",
+    "rect": [
+      55,
+      19,
+      291,
+      90
+    ],
+    "offset": [
+      0.5,
+      -4
+    ],
+    "originalSize": [
+      400,
+      120
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}
