@@ -642,7 +642,7 @@ window.__require = function e(t, n, r) {
       RandomMin: 2,
       RandomMax: 10,
       ShowTimeMin: .2,
-      ShowTimeMax: 1
+      ShowTimeMax: .6
     };
     cc._RF.pop();
   }, {} ],
@@ -1156,7 +1156,7 @@ window.__require = function e(t, n, r) {
       GameScene.prototype.onCurrentPointRemoveChild = function(child) {
         var _this = this;
         if (this.NextPoint.childrenCount <= 0) {
-          var point_1 = GameFactory_1.gFactory.getObj("Point", Game_1.Game.getNextCurrentCardPoint(this.CardPages.getCurrentPageIndex()));
+          var point_1 = GameFactory_1.gFactory.getObj("Point", Game_1.Game.getNextPoint());
           this.NextPoint.addChild(point_1);
           point_1.x = 0;
           point_1.y = 0;
