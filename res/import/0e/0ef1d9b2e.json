@@ -1,0 +1,128 @@
+[
+  {
+    "__type__": "cc.SpriteAtlas",
+    "_name": "text.plist",
+    "_spriteFrames": {
+      "font_great": {
+        "__uuid__": "62P6Fm6EFK6IViRA8aqABr"
+      },
+      "font_nice": {
+        "__uuid__": "d546yE0L1FioTFF5LjPXBi"
+      },
+      "font_oops": {
+        "__uuid__": "ecGZyRpP1NU5qwwgpK7NZt"
+      },
+      "font_perfect": {
+        "__uuid__": "b8/5k9HUZKGpnnIWAri8pq"
+      }
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_great",
+      "texture": "b3FvucidtB6rNIscSfCdou",
+      "rect": [
+        1,
+        95,
+        294,
+        92
+      ],
+      "offset": [
+        0,
+        -4
+      ],
+      "originalSize": [
+        400,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_perfect",
+      "texture": "b3FvucidtB6rNIscSfCdou",
+      "rect": [
+        1,
+        1,
+        362,
+        92
+      ],
+      "offset": [
+        0,
+        0
+      ],
+      "originalSize": [
+        362,
+        92
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_nice",
+      "texture": "b3FvucidtB6rNIscSfCdou",
+      "rect": [
+        297,
+        115,
+        256,
+        92
+      ],
+      "offset": [
+        0,
+        -4
+      ],
+      "originalSize": [
+        400,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_oops",
+      "texture": "b3FvucidtB6rNIscSfCdou",
+      "rect": [
+        365,
+        1,
+        244,
+        112
+      ],
+      "offset": [
+        0,
+        -1
+      ],
+      "originalSize": [
+        400,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+]
