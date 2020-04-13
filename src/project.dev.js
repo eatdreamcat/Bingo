@@ -361,7 +361,20 @@ window.__require = function e(t, n, r) {
           Game_1.Game.addScore(Const_1.ScoreType.Oops, Const_1.Score.Oops, 1);
           this.showWrong();
         }
-        Game_1.Game.getCurMode() != Const_1.SkillType.Normal && Game_1.Game.getCurMode() != Const_1.SkillType.Super && EventManager_1.gEventMgr.emit(EventName_1.GlobalEvent.SKILL_DONE);
+        switch (Game_1.Game.getCurMode()) {
+         case Const_1.SkillType.Star:
+          EventManager_1.gEventMgr.emit(EventName_1.GlobalEvent.SKILL_DONE);
+          break;
+
+         case Const_1.SkillType.Gold:
+          var nextPage = (Game_1.Game.cardIndex + 1) % Game_1.Game.getCardNumber();
+          var points = Game_1.Game.getCurrentPageValues(nextPage);
+          (Game_1.Game.checkIsFull(nextPage) || points.indexOf(Game_1.Game.goldSelectValue) < 0) && EventManager_1.gEventMgr.emit(EventName_1.GlobalEvent.SKILL_DONE);
+          break;
+
+         case Const_1.SkillType.Super:
+          Game_1.Game.checkIsFull(Game_1.Game.cardIndex) && EventManager_1.gEventMgr.emit(EventName_1.GlobalEvent.SKILL_DONE);
+        }
       };
       Card.prototype.showWrong = function() {
         var _this = this;
@@ -377,6 +390,7 @@ window.__require = function e(t, n, r) {
         this.Mouse.stopAllActions();
         this.Mouse.active = false;
         Game_1.Game.addHighLightCard(this.pageIndex);
+        Game_1.Game.delCurrentCardValue(this.pageIndex, this.value);
       };
       Card.prototype.setValue = function(val) {
         this.value = val;
@@ -436,7 +450,6 @@ window.__require = function e(t, n, r) {
         this.isNewPlayer = false;
         this.celerStartCallback = null;
         this.isInCeler = false;
-        var errLog_1;
         false;
       }
       Object.defineProperty(CelerSDK, "inst", {
@@ -455,6 +468,7 @@ window.__require = function e(t, n, r) {
         this.celerStartCallback = callback;
       };
       CelerSDK.prototype.celerXReady = function() {
+        console.error(" invoke celerx.ready() ");
         celerx.ready();
         true;
         this.onCelerStart();
@@ -466,16 +480,18 @@ window.__require = function e(t, n, r) {
         return this.isInCeler;
       };
       CelerSDK.prototype.onCelerStart = function() {
-        var match = celerx.getMatch();
-        if (match && match.sharedRandomSeed) {
-          CMath.randomSeed = match.sharedRandomSeed;
-          CMath.sharedSeed = match.sharedRandomSeed;
+        console.error(" celerx onStart call");
+        this.match = celerx.getMatch() || {};
+        console.error("match id:", this.match.matchId, ", seed:", this.match.sharedRandomSeed);
+        if (this.match && this.match.sharedRandomSeed) {
+          CMath.randomSeed = this.match.sharedRandomSeed;
+          CMath.sharedSeed = this.match.sharedRandomSeed;
           this.isInCeler = true;
         } else {
           this.isInCeler = false;
           CMath.randomSeed = Math.random();
         }
-        match && match.shouldLaunchTutorial || true ? this.isNewPlayer = true : this.isNewPlayer = false;
+        this.match && this.match.shouldLaunchTutorial || true ? this.isNewPlayer = true : this.isNewPlayer = false;
         var takeImage = false;
         var canvas = document.getElementsByTagName("canvas")[0];
         cc.director.on(cc.Director.EVENT_AFTER_DRAW, function() {
@@ -495,6 +511,7 @@ window.__require = function e(t, n, r) {
       CelerSDK.prototype.submitScore = function(score) {
         if (this.alreadySubmit) return;
         this.alreadySubmit = true;
+        console.error(" submit score:", score, ", match id:", this.match.matchId);
         celerx.submitScore(score);
       };
       return CelerSDK;
@@ -530,8 +547,8 @@ window.__require = function e(t, n, r) {
     })(Theme = exports.Theme || (exports.Theme = {}));
     exports.ThemePool = [ Theme.Carousel, Theme.Roller, Theme.Wheel ];
     exports.RewardTime = {
-      One: 3.25,
-      Two: 2.9
+      One: 4,
+      Two: 3.2
     };
     exports.TimeScorePercent = {
       Perfect: .2,
@@ -634,15 +651,15 @@ window.__require = function e(t, n, r) {
       Min: 11
     };
     exports.GoldSkillTimeLimit = {
-      Select: 7,
-      Click: 4
+      Select: 8,
+      Click: 6
     };
     exports.SuperTime = {
       LastTime: 60,
       RandomMin: 2,
-      RandomMax: 10,
-      ShowTimeMin: .2,
-      ShowTimeMax: .6
+      RandomMax: 8,
+      ShowTimeMin: .3,
+      ShowTimeMax: .7
     };
     cc._RF.pop();
   }, {} ],
@@ -907,11 +924,6 @@ window.__require = function e(t, n, r) {
         this.SuperSkillLayer.hide();
         CelerSDK_1.CelerSDK.inst.init(this.celerOnStart.bind(this));
         StepController_1.gStep.register(this.celerReady.bind(this), [ Step.Audio, Step.Prefab ]);
-        Game_1.Game.prepare();
-        for (var _i = 0, _a = this.Background.children; _i < _a.length; _i++) {
-          var child = _a[_i];
-          child.active = child.name == Const_1.Theme[Game_1.Game.Theme];
-        }
         AudioController_1.gAudio.init(function() {
           StepController_1.gStep.nextStep(Step.Audio);
         });
@@ -925,7 +937,12 @@ window.__require = function e(t, n, r) {
       };
       GameScene.prototype.celerOnStart = function() {
         CelerSDK_1.CelerSDK.inst.isNew();
+        Game_1.Game.prepare();
         Game_1.Game.start();
+        for (var _i = 0, _a = this.Background.children; _i < _a.length; _i++) {
+          var child = _a[_i];
+          child.active = child.name == Const_1.Theme[Game_1.Game.Theme];
+        }
         this.initGameScene();
       };
       GameScene.prototype.updateSuperSkillProgress = function() {
@@ -1003,6 +1020,7 @@ window.__require = function e(t, n, r) {
             }
           }
         }
+        console.log(Game_1.Game.getCurrentCardValue());
         this.onCurrentPointRemoveChild(null);
         this.updateSuperSkillProgress();
         this.updateToolPercent();
@@ -1016,7 +1034,7 @@ window.__require = function e(t, n, r) {
         this.updateBingoButton();
       };
       GameScene.prototype.scrollCardPage = function(e) {
-        if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal) return;
+        if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal && Game_1.Game.getCurMode() != Const_1.SkillType.Gold) return;
         for (var _i = 0, _a = this.PageTabButtonRoot.children; _i < _a.length; _i++) {
           var child = _a[_i];
           e.target == child ? child.getComponent(cc.Button).interactable = false : child.getComponent(cc.Button).interactable = true;
@@ -1036,6 +1054,10 @@ window.__require = function e(t, n, r) {
         EventManager_1.gEventMgr.on(EventName_1.GlobalEvent.CHECK_BINGO, this.CheckBingo, this);
         EventManager_1.gEventMgr.on(EventName_1.GlobalEvent.UPDATE_TOOL_PERCENT, this.updateToolPercent, this);
         EventManager_1.gEventMgr.on(EventName_1.GlobalEvent.SKILL_DONE, this.skillDone, this);
+        EventManager_1.gEventMgr.on(EventName_1.GlobalEvent.GAME_OVER, this.onGameOver, this);
+      };
+      GameScene.prototype.onGameOver = function(overType) {
+        console.error("OverType:", Const_1.OverType[overType]);
       };
       GameScene.prototype.Bingo = function() {
         if (Game_1.Game.canBingo(this.CardPages.getCurrentPageIndex())) {
@@ -1053,6 +1075,7 @@ window.__require = function e(t, n, r) {
         } else Game_1.Game.addScore(Const_1.ScoreType.BingoFail, Const_1.Score.BingoFail, 1, CMath.ConvertToNodeSpaceAR(this.BingoButton.node, this.TopNode));
       };
       GameScene.prototype.updateBingoButton = function() {
+        Game_1.Game.cardIndex = this.CardPages.getCurrentPageIndex();
         if (Game_1.Game.canBingo(this.CardPages.getCurrentPageIndex())) {
           this.BingoButton.normalSprite = this.UIAtlas.getSpriteFrame(Const_1.UI_Atlas.Bingo_Orange_Up);
           this.BingoButton.hoverSprite = this.UIAtlas.getSpriteFrame(Const_1.UI_Atlas.Bingo_Orange_Up);
@@ -1169,7 +1192,6 @@ window.__require = function e(t, n, r) {
         }
       };
       GameScene.prototype.addNormalReward = function(point) {
-        var _this = this;
         var delay = 0;
         if (this.PointArray.childrenCount >= 4) {
           var lastPoint_1 = this.PointArray.children[0];
@@ -1184,10 +1206,9 @@ window.__require = function e(t, n, r) {
           var child = _a[_i];
           child.runAction(cc.sequence(cc.delayTime(delay), cc.moveBy(.15, -child.width - 20, 0)));
         }
-        point.runAction(cc.sequence(cc.delayTime(delay), cc.callFunc(function() {
-          point.setPosition(CMath.ConvertToNodeSpaceAR(point, _this.PointArray));
-          point.setParent(_this.PointArray);
-        }), cc.spawn(cc.moveTo(.15, 0, 0), cc.scaleTo(.15, .9))));
+        point.setPosition(CMath.ConvertToNodeSpaceAR(point, this.PointArray));
+        point.setParent(this.PointArray);
+        point.runAction(cc.sequence(cc.delayTime(delay), cc.callFunc(function() {}), cc.spawn(cc.moveTo(.15, 0, 0), cc.scaleTo(.15, .9))));
       };
       GameScene.prototype.addScore = function(type, score, scale, pos) {
         var _this = this;
@@ -1246,6 +1267,10 @@ window.__require = function e(t, n, r) {
           console.log(" \u6b64\u5361\u7247\u5df2\u7ecf\u5168\u90e8\u70b9\u6ee1");
           return;
         }
+        if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal) {
+          console.error(" not normal mode!");
+          return;
+        }
         this.updateSuperSkillProgress();
         if (Game_1.Game.getToolPercent() >= 1) {
           Game_1.Game.clearToolPercent();
@@ -1270,6 +1295,10 @@ window.__require = function e(t, n, r) {
           console.log(" \u6b64\u5361\u7247\u5df2\u7ecf\u5168\u90e8\u70b9\u6ee1");
           return;
         }
+        if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal) {
+          console.error(" not normal mode!");
+          return;
+        }
         this.updateSuperSkillProgress();
         if (Game_1.Game.getToolPercent() >= 1) {
           Game_1.Game.clearToolPercent();
@@ -1282,6 +1311,10 @@ window.__require = function e(t, n, r) {
       };
       GameScene.prototype.timeSkill = function() {
         console.log(" \u65f6\u95f4\u9053\u5177");
+        if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal) {
+          console.error(" not normal mode!");
+          return;
+        }
         Game_1.Game.addGameTime(Const_1.SkillTimeBouns);
         this.updateSuperSkillProgress();
         if (Game_1.Game.getToolPercent() >= 1) {
@@ -1293,6 +1326,10 @@ window.__require = function e(t, n, r) {
         console.log(" \u8d85\u7ea7\u9053\u5177");
         if (Game_1.Game.checkIsFull(this.CardPages.getCurrentPageIndex())) {
           console.log(" \u6b64\u5361\u7247\u5df2\u7ecf\u5168\u90e8\u70b9\u6ee1");
+          return;
+        }
+        if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal) {
+          console.error(" not normal mode!");
           return;
         }
         Game_1.Game.pause();
@@ -1407,6 +1444,7 @@ window.__require = function e(t, n, r) {
         this.skillUsedRecord = [];
         this.totalOverBingoTimes = 0;
         this.totalHighLightCount = 0;
+        this.cardIndex = 0;
         this.bingoCache = new HashMap_1.HashMap();
         this.toolPercent = 0;
         this.gameTime = 0;
@@ -1498,11 +1536,20 @@ window.__require = function e(t, n, r) {
       GameCtrl.prototype.addCurrentCardValue = function(pageIndex, val) {
         this.currentCardPool.has(pageIndex) ? this.currentCardPool.get(pageIndex).push(val) : this.currentCardPool.add(pageIndex, [ val ]);
       };
+      GameCtrl.prototype.getCurrentCardValue = function() {
+        return this.currentCardPool;
+      };
+      GameCtrl.prototype.getCurrentPageValues = function(pageIndex) {
+        if (this.currentCardPool.has(pageIndex)) return this.currentCardPool.get(pageIndex).concat();
+        return [];
+      };
       GameCtrl.prototype.delCurrentCardValue = function(pageIndex, val) {
         if (!this.currentCardPool.has(pageIndex)) return;
         var index = this.currentCardPool.get(pageIndex).indexOf(val);
+        console.error(" del current card :", pageIndex, " , val:", val, ", index:", index);
         if (index >= 0) {
           this.currentCardPool.get(pageIndex).splice(index, 1);
+          console.error(" del card val:", this.currentCardPool.get(pageIndex).length);
           this.currentCardPool.get(pageIndex).length <= 0 && this.currentCardPool.remove(pageIndex);
         }
         this.currentCardPool.length <= 0 && EventManager_1.gEventMgr.emit(EventName_1.GlobalEvent.GAME_OVER, Const_1.OverType.CardClear);
@@ -1514,7 +1561,7 @@ window.__require = function e(t, n, r) {
         if (this.currentCardPool.length > 0) {
           var pointVal = 0;
           if (random) {
-            var randomIndex = Math.floor(CMath.getRandom(0, this.currentCardPool.length));
+            var randomIndex = Math.floor(CMath.getRandom(0, this.currentCardPool.get(pageIndex).length));
             pointVal = this.currentCardPool.get(pageIndex)[randomIndex];
             del && this.currentCardPool.get(pageIndex).splice(randomIndex, 1);
           } else if (del) pointVal = this.currentCardPool.get(pageIndex).pop(); else {
@@ -1560,7 +1607,7 @@ window.__require = function e(t, n, r) {
       };
       GameCtrl.prototype.initSkillPool = function(count) {
         for (var i = 0; i < count; i++) {
-          var randomPool = [ Const_1.SkillType.Gold, Const_1.SkillType.Star, Const_1.SkillType.Time ];
+          var randomPool = [ Const_1.SkillType.Gold, Const_1.SkillType.Gold, Const_1.SkillType.Gold ];
           (this.skillUsedRecord[this.skillUsedRecord.length - 1] == Const_1.SkillType.Time && 0 == i || i > 0 && this.currentSkillPool[i - 1] == Const_1.SkillType.Time) && randomPool.splice(2, 1);
           if (this.skillUsedRecord.length >= 2 && this.skillUsedRecord[this.skillUsedRecord.length - 1] == this.skillUsedRecord[this.skillUsedRecord.length - 2]) {
             var index = randomPool.indexOf(this.skillUsedRecord[this.skillUsedRecord.length - 1]);
@@ -1572,7 +1619,7 @@ window.__require = function e(t, n, r) {
           }
           if (randomPool.length <= 0) {
             console.warn(" random skill empty!!");
-            randomPool = [ Const_1.SkillType.Gold, Const_1.SkillType.Star, Const_1.SkillType.Time ];
+            randomPool = [ Const_1.SkillType.Gold, Const_1.SkillType.Gold, Const_1.SkillType.Gold ];
           }
           this.currentSkillPool.push(randomPool[Math.floor(CMath.getRandom(0, randomPool.length))]);
         }
@@ -1740,12 +1787,42 @@ window.__require = function e(t, n, r) {
         this.node.active = true;
         this.Desk.active = false;
         this.SelectLayer.active = true;
+        this.CurrentPoint.node.active = false;
         this.selectTime = Const_1.GoldSkillTimeLimit.Select;
         this.clickTime = Const_1.GoldSkillTimeLimit.Click;
+        var points = Game_1.Game.getCurrentPageValues(0).concat(Game_1.Game.getCurrentPageValues(1));
+        this.SelectPointRoot.getComponent(cc.Layout).enabled = points.length >= 4;
+        if (points.length < 4) switch (points.length) {
+         case 1:
+          this.SelectPointRoot.x = 231;
+          this.SelectPointRoot.y = -75;
+          this.SelectPointRoot.children[2].x = -235;
+          break;
+
+         case 2:
+          this.SelectPointRoot.x = 0;
+          this.SelectPointRoot.y = -75;
+          this.SelectPointRoot.children[2].x = -235;
+          break;
+
+         case 3:
+          this.SelectPointRoot.x = 0;
+          this.SelectPointRoot.y = 177;
+          this.SelectPointRoot.children[2].x = 0;
+        } else {
+          this.SelectPointRoot.x = 0;
+          this.SelectPointRoot.y = 177;
+          this.SelectPointRoot.children[2].x = -235;
+        }
         for (var _i = 0, _a = this.SelectPointRoot.children; _i < _a.length; _i++) {
           var child = _a[_i];
           var point = child.getComponent(Point_1.default);
-          point && point.setValue(Game_1.Game.getNextCurrentCardPoint(this.pageIndex, true));
+          if (point && points.length > 0) {
+            var randomIndex = Math.floor(CMath.getRandom(0, points.length));
+            point.setValue(points[randomIndex]);
+            points.splice(randomIndex, 1);
+            child.active = true;
+          } else child.active = false;
         }
         this.SelectTimeBar.progress = 1;
         this.SelectTimeLabel.string = Math.ceil(this.selectTime).toString();
@@ -1758,6 +1835,7 @@ window.__require = function e(t, n, r) {
         }
         this.Desk.active = true;
         this.SelectLayer.active = false;
+        this.CurrentPoint.node.active = true;
         this.CurrentPoint.setValue(Game_1.Game.goldSelectValue);
         this.ClickTimeLabel.string = Math.ceil(this.selectTime).toString();
         this.ClickTimeBar.progress = 1;
@@ -2214,6 +2292,7 @@ window.__require = function e(t, n, r) {
       value: true
     });
     var GameFactory_1 = require("./Controller/GameFactory");
+    var Const_1 = require("./Const");
     var Game_1 = require("./Controller/Game");
     var _a = cc._decorator, ccclass = _a.ccclass, property = _a.property;
     var Skill = function(_super) {
@@ -2236,6 +2315,14 @@ window.__require = function e(t, n, r) {
         this.skillType = arguments[0][2];
         this.node.on(cc.Node.EventType.TOUCH_END, function() {
           if (_this.node.zIndex != _this.node.getParent().childrenCount || _this.node.scale <= .98 || _this.node.scale >= 1.1) return;
+          if (Game_1.Game.checkIsFull(Game_1.Game.cardIndex) && _this.skillType != Const_1.SkillType.Time) {
+            console.log("this card is full:", Game_1.Game.cardIndex);
+            return;
+          }
+          if (Game_1.Game.getCurMode() != Const_1.SkillType.Normal) {
+            console.error(" is using other skill now:", Const_1.SkillType[Game_1.Game.getCurMode()]);
+            return;
+          }
           Game_1.Game.useSkill(_this.skillType);
           if (_this.pressCallback) {
             _this.pressCallback();
@@ -2256,6 +2343,7 @@ window.__require = function e(t, n, r) {
     exports.default = Skill;
     cc._RF.pop();
   }, {
+    "./Const": "Const",
     "./Controller/Game": "Game",
     "./Controller/GameFactory": "GameFactory"
   } ],
