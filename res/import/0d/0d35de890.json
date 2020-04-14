@@ -1,0 +1,232 @@
+[
+  [
+    {
+      "__type__": "cc.Prefab",
+      "_name": "Score.10",
+      "data": {
+        "__id__": 1
+      }
+    },
+    {
+      "__type__": "cc.Node",
+      "_name": "Score.10",
+      "_children": [
+        {
+          "__id__": 2
+        },
+        {
+          "__id__": 3
+        },
+        {
+          "__id__": 4
+        }
+      ],
+      "_level": 1,
+      "_components": [
+        {
+          "__type__": "145bfRPC9pPLaM0crpB/9nD",
+          "node": {
+            "__id__": 1
+          }
+        }
+      ],
+      "_prefab": {
+        "__type__": "cc.PrefabInfo",
+        "root": {
+          "__id__": 1
+        },
+        "asset": {
+          "__uuid__": "44aDA6YcVFj6aN7mnwr87F"
+        },
+        "fileId": "cbULAzt2ROCLK/C84rkMPg"
+      },
+      "_scale": {
+        "__type__": "cc.Vec3",
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "groupIndex": 1
+    },
+    {
+      "__type__": "cc.Node",
+      "_name": "ScoreFail",
+      "_parent": {
+        "__id__": 1
+      },
+      "_level": 2,
+      "_components": [
+        {
+          "__type__": "cc.Label",
+          "node": {
+            "__id__": 2
+          },
+          "_useOriginalSize": false,
+          "_string": "/20",
+          "_N$string": "/20",
+          "_fontSize": 80,
+          "_N$file": {
+            "__uuid__": "30OMnDT1dJ/ahoOmk72XDj"
+          },
+          "_isSystemFontUsed": false,
+          "_N$verticalAlign": 1
+        }
+      ],
+      "_prefab": {
+        "__type__": "cc.PrefabInfo",
+        "root": {
+          "__id__": 1
+        },
+        "asset": {
+          "__uuid__": "44aDA6YcVFj6aN7mnwr87F"
+        },
+        "fileId": "47HoPlYdhHy4dblZ+3CGxw"
+      },
+      "_contentSize": {
+        "__type__": "cc.Size",
+        "width": 207.27,
+        "height": 36.36
+      },
+      "_anchorPoint": {
+        "__type__": "cc.Vec2",
+        "y": 0.5
+      },
+      "_position": {
+        "__type__": "cc.Vec3",
+        "y": 22
+      },
+      "_scale": {
+        "__type__": "cc.Vec3",
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "__type__": "cc.Node",
+      "_name": "Score",
+      "_parent": {
+        "__id__": 1
+      },
+      "_level": 2,
+      "_components": [
+        {
+          "__type__": "cc.Label",
+          "node": {
+            "__id__": 3
+          },
+          "_useOriginalSize": false,
+          "_string": "/20",
+          "_N$string": "/20",
+          "_fontSize": 80,
+          "_N$file": {
+            "__uuid__": "62nS9rIAFDpIZKiLvPQbFN"
+          },
+          "_isSystemFontUsed": false,
+          "_N$verticalAlign": 1
+        }
+      ],
+      "_prefab": {
+        "__type__": "cc.PrefabInfo",
+        "root": {
+          "__id__": 1
+        },
+        "asset": {
+          "__uuid__": "44aDA6YcVFj6aN7mnwr87F"
+        },
+        "fileId": "2buM6To5FNwJeP1S0RsOiB"
+      },
+      "_contentSize": {
+        "__type__": "cc.Size",
+        "width": 207.27,
+        "height": 36.36
+      },
+      "_anchorPoint": {
+        "__type__": "cc.Vec2",
+        "y": 0.5
+      },
+      "_position": {
+        "__type__": "cc.Vec3",
+        "y": 98
+      },
+      "_scale": {
+        "__type__": "cc.Vec3",
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "__type__": "cc.Node",
+      "_name": "Text",
+      "_parent": {
+        "__id__": 1
+      },
+      "_level": 2,
+      "_components": [
+        {
+          "__type__": "cc.Sprite",
+          "node": {
+            "__id__": 4
+          },
+          "_spriteFrame": {
+            "__uuid__": "62P6Fm6EFK6IViRA8aqABr"
+          }
+        }
+      ],
+      "_prefab": {
+        "__type__": "cc.PrefabInfo",
+        "root": {
+          "__id__": 1
+        },
+        "asset": {
+          "__uuid__": "44aDA6YcVFj6aN7mnwr87F"
+        },
+        "fileId": "6aJlIlDPBEtKeRj7B+6jDV"
+      },
+      "_contentSize": {
+        "__type__": "cc.Size",
+        "width": 294,
+        "height": 92
+      },
+      "_anchorPoint": {
+        "__type__": "cc.Vec2",
+        "x": 1,
+        "y": 0.5
+      },
+      "_scale": {
+        "__type__": "cc.Vec3",
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    }
+  ],
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_great",
+      "texture": "b3FvucidtB6rNIscSfCdou",
+      "rect": [
+        1,
+        95,
+        294,
+        92
+      ],
+      "offset": [
+        0,
+        -4
+      ],
+      "originalSize": [
+        400,
+        120
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+]

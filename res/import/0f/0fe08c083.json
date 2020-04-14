@@ -1,0 +1,330 @@
+[
+  {
+    "__type__": "cc.LabelAtlas",
+    "_name": "Fail",
+    "spriteFrame": {
+      "__uuid__": "78ugOu1IdFrZg0aju/5AYP"
+    },
+    "fontSize": 88,
+    "_fntConfig": {
+      "commonHeight": 100,
+      "fontSize": 88,
+      "atlasName": "font_fail",
+      "fontDefDictionary": {
+        "47": {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "48": {
+          "rect": {
+            "x": 76,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "49": {
+          "rect": {
+            "x": 152,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "50": {
+          "rect": {
+            "x": 228,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "51": {
+          "rect": {
+            "x": 304,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "52": {
+          "rect": {
+            "x": 380,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "53": {
+          "rect": {
+            "x": 456,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "54": {
+          "rect": {
+            "x": 532,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "55": {
+          "rect": {
+            "x": 608,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "56": {
+          "rect": {
+            "x": 684,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "57": {
+          "rect": {
+            "x": 760,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        }
+      },
+      "kerningDict": {}
+    }
+  },
+  {
+    "__type__": "cc.LabelAtlas",
+    "_name": "Score",
+    "spriteFrame": {
+      "__uuid__": "eaPPezMFtCRraHnE7oSlBn"
+    },
+    "fontSize": 88,
+    "_fntConfig": {
+      "commonHeight": 100,
+      "fontSize": 88,
+      "atlasName": "font_score",
+      "fontDefDictionary": {
+        "47": {
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "48": {
+          "rect": {
+            "x": 76,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "49": {
+          "rect": {
+            "x": 152,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "50": {
+          "rect": {
+            "x": 228,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "51": {
+          "rect": {
+            "x": 304,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "52": {
+          "rect": {
+            "x": 380,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "53": {
+          "rect": {
+            "x": 456,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "54": {
+          "rect": {
+            "x": 532,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "55": {
+          "rect": {
+            "x": 608,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "56": {
+          "rect": {
+            "x": 684,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        },
+        "57": {
+          "rect": {
+            "x": 760,
+            "y": 0,
+            "width": 76,
+            "height": 100
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 76
+        }
+      },
+      "kerningDict": {}
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_fail",
+      "texture": "28uJbg1ehGnbPUKt4ZQoDq",
+      "rect": [
+        0,
+        4,
+        830,
+        96
+      ],
+      "offset": [
+        -3,
+        -2
+      ],
+      "originalSize": [
+        836,
+        100
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "__type__": "cc.SpriteFrame",
+    "content": {
+      "name": "font_score",
+      "texture": "da9hcWeTJD0JnWTnDBznOq",
+      "rect": [
+        0,
+        4,
+        830,
+        96
+      ],
+      "offset": [
+        -3,
+        -2
+      ],
+      "originalSize": [
+        836,
+        100
+      ],
+      "capInsets": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+]
